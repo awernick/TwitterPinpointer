@@ -65,6 +65,7 @@ class TwitterParser(object):
         if tweetFeatures is not None:
             polarity = self.classifier.classify(tweetFeatures)
 
+        print(text)
         return {
             'text': text,
             'subject': query,
@@ -88,7 +89,7 @@ class TwitterParser(object):
                 if similarity > greatestSimilarity:
                     greatestSimilarity = similarity
                     mostSimilarLocation = place
-            return mostSimilarLocation["geometry"]["coordinates"]
+            return mostSimilarLocation["centroid"]
         else:
             return False
 

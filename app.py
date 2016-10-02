@@ -62,10 +62,10 @@ def get_tweets():
         else:
             placeID = None
 
-            hillary_tweets = twitter.search(query='Hillary Clinton', place=placeID)[0]
-            trump_tweets = twitter.search(query='Donald Trump', place=placeID)[0]
-            tweets = hillary_tweets + trump_tweets
-            return jsonify(tweets)
+        hillary_tweets = twitter.search(query='Hillary Clinton', place=placeID)[0]
+        trump_tweets = twitter.search(query='Donald Trump', place=placeID)[0]
+        tweets = hillary_tweets + trump_tweets
+        return jsonify(tweets)
     except TwitterHTTPError:
         abort(429)
 
