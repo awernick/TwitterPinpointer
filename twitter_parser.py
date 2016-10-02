@@ -39,7 +39,11 @@ class TwitterParser(object):
         return (formatted_tweets, numPos/(numPos+numNeg))
 
     def parse(self, tweet, query):
-        place=utf8(tweet["user"]["location"] or '')
+        if tweet['user']['location']:
+            place = tweet['user']['location']
+        else:
+            place = ''
+        place=utf8(place)
         person=utf8(tweet["user"]["screen_name"])
         numRetweets=tweet["retweet_count"]
         geocode=tweet["geo"]
