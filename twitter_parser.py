@@ -33,6 +33,8 @@ class TwitterParser(object):
         formatted_tweets = list()
         for tweet in tweets:
             ftweet = self.parse(tweet, query)
+            if ftweet['lat'] is None or ftweet['lng'] is None:
+                continue
             formatted_tweets.append(ftweet)
             if ftweet['sentiment'] == "neg":
                 numNeg=numNeg+1
@@ -48,14 +50,14 @@ class TwitterParser(object):
             location = tweet["user"]["location"]
             coordinates = self.geocode(location)
             if coordinates == False:
-                lat = ""
-                lng = ""
+                lat = None
+                lng = None
             else:
                 lat = coordinates[0]
                 lng = coordinates[1]
         else:
-            lat = ""
-            lng = ""
+            lat = None
+            lng = None
 
         person = tweet["user"]["screen_name"]
         numRetweets=tweet["retweet_count"]
@@ -131,6 +133,7 @@ class TwitterParser(object):
         posfeats = self.__feature_tuple("corpora/finalPositiveCorpus.txt", "r", "pos")
         negfeats = self.__feature_tuple("corpora/finalNegativeCorpus.txt", "r", "neg")
 
+}
         #a list of (dict, label) tuples, one for each label
         trainfeats=[posfeats,negfeats]
 
