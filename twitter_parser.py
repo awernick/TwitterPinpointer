@@ -3,6 +3,7 @@ import geocoder
 from twitter import *
 from unicode_funcs import *
 from difflib import SequenceMatcher
+from random  import randint
 
 from nltk.corpus import stopwords
 from nltk.stem.porter import PorterStemmer
@@ -68,6 +69,15 @@ class TwitterParser(object):
         tweetFeatures = self.extract_features_from(tweet["text"])
         if tweetFeatures is not None:
             polarity = self.classifier.classify(tweetFeatures)
+            rand1 = randint(0, 100)
+            rand2 = randint(0, 100)
+            if polarity == "pos":
+                positivity = rand1 if rand1 > rand2 else rand2
+                negativity = rand1 if rand1 < rand2 else rand2
+            else:
+                positivity = rand1 if rand1 < rand2 else rand2
+                negativity = rand1 if rand1 > rand2 else rand2
+
 
         return {
             'text': text,
@@ -78,7 +88,9 @@ class TwitterParser(object):
             'time': time,
             'lat': lat,
             'lng': lng,
-            'retweets': numRetweets
+            'retweets': numRetweets,
+            'positivity': positivity,
+            'negativity': negativity
         }
 
 
