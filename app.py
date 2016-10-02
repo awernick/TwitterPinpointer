@@ -106,6 +106,5 @@ def getApproximateRadius(place):
 def distance(x, y):
     return ((x[0]-y[0]) + (x[1]-y[1])) ** 2
 
-
 if __name__ == '__main__':
     socketio.run(app, debug=True)
