@@ -43,7 +43,7 @@ def process_stream(event, query, place=None):
     for tweet in stream:
         print(tweet)
         socketio.emit(event, "ID: %s\nText: %s\nPlace: %s\n" %
-                      (tweet['user'], tweet['text'], tweet['coordinates']))
+                      (tweet['user'], tweet['text'], tweet['lat']))
         eventlet.sleep(5)
 
 # eventlet.spawn(process_stream, 'trump_tweet', 'Donald Trump')

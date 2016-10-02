@@ -44,7 +44,7 @@ class TwitterParser(object):
             coordinates = tweet["coordinates"]
         elif tweet["user"]["location"]:
             location = tweet["user"]["location"]
-            coordinates = self.geocode(location)
+            coordinates = False #self.geocode(location)
             if coordinates == False:
                 lat = ""
                 lng = ""
@@ -65,7 +65,6 @@ class TwitterParser(object):
         if tweetFeatures is not None:
             polarity = self.classifier.classify(tweetFeatures)
 
-        print(text)
         return {
             'text': text,
             'subject': query,
