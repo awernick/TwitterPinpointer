@@ -35,36 +35,40 @@ twitter_api    = Twitter(auth=auth)
 # hilary_stream  = twitter_stream.statuses.filter(track='Hilary Clinton')
 #trump_stream   = twitter_stream.statuses.filter(track='Donald Trump')
 
+stream_thread = None
+
 
 def process_stream(event, query, place=None):
     stream = twitter_stream.search(query, place)
     for tweet in stream:
         print(tweet)
         socketio.emit(event, "ID: %s\nText: %s\nPlace: %s\n" %
-                      (tweet['user'], tweet['text'], tweet['place']))
+                      (tweet['user'], tweet['text'], tweet['coordinates']))
         eventlet.sleep(5)
 
-stream_thread = eventlet.spawn(process_stream, 'clinton_tweet', 'Hillary Clinton')
 # eventlet.spawn(process_stream, 'trump_tweet', 'Donald Trump')
 
 # RESTful
 @app.route('/tweets', methods=['GET'])
 def get_tweets():
-    if 'lat' in request.args \
-        and 'lng' in request.args and 'radius' in request.args:
-        lat    = request.args['lat']
-        lng    = request.args['lng']
-        radius = request.args['radius']
+    try:
+        if 'lat' in request.args \
+            and 'lng' in request.args and 'radius' in request.args:
+            lat    = request.args['lat']
+            lng    = request.args['lng']
+            radius = request.args['radius']
 
-        placeID = getLocation(lat, lng, radius)
-    else:
-        placeID = None
+            placeID = getLocation(lat, lng, radius)
+        else:
+            placeID = None
 
-    hillary_tweets = twitter.search(query='Hilary Clinton', place=placeID)[0]
-    trump_tweets = twitter.search(query='Donald Trump', place=placeID)[0]
-    tweets = hillary_tweets + trump_tweets
+            hillary_tweets = twitter.search(query='Hillary Clinton', place=placeID)[0]
+            trump_tweets = twitter.search(query='Donald Trump', place=placeID)[0]
+            tweets = hillary_tweets + trump_tweets
+            return jsonify(tweets)
+    except TwitterHTTPError:
+        abort(429)
 
-    return jsonify(tweets)
 
 
 @app.route('/tweets/<int:tweet_id>', methods=['GET'])
@@ -81,6 +85,8 @@ def get_tweet(tweet_id):
 @socketio.on('connect')
 def client_connected():
     print "Client connected"
+    stream_thread = eventlet.spawn(process_stream, 'clinton_tweet',
+                                   'Hillary Clinton')
 
 @socketio.on('disconnect')
 def client_disconnected():

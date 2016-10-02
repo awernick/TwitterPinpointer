@@ -1,5 +1,6 @@
 from twitter import *
 from unicode_funcs import *
+from difflib import SequenceMatcher
 
 from nltk.corpus import stopwords
 from nltk.stem.porter import PorterStemmer
@@ -39,7 +40,21 @@ class TwitterParser(object):
         return (formatted_tweets, numPos/(numPos+numNeg))
 
     def parse(self, tweet, query):
-        place = tweet['user']['location']
+        if tweet["coordinates"]:
+            coordinates = tweet["coordinates"]
+        elif tweet["user"]["location"]:
+            location = tweet["user"]["location"]
+            coordinates = self.geocode(location)
+            if coordinates == False:
+                lat = ""
+                lng = ""
+            else:
+                lat = coordinates[0]
+                lng = coordinates[1]
+        else:
+            lat = ""
+            lng = ""
+
         person = tweet["user"]["screen_name"]
         numRetweets=tweet["retweet_count"]
         geocode=tweet["geo"]
@@ -54,13 +69,31 @@ class TwitterParser(object):
             'text': text,
             'subject': query,
             'sentiment': polarity,
-            'place': place,
             'user': person,
             'geocode': geocode,
             'time': time,
+            'lat': lat,
+            'lng': lng,
             'retweets': numRetweets
         }
 
+
+    def geocode(self, location):
+        listOfPlaces = self.api.geo.search(query = location)['result']['places']
+        if len(listOfPlaces) > 0:
+            mostSimilarLocation = listOfPlaces[0]
+            greatestSimilarity = 0
+            for place in listOfPlaces:
+                similarity = self.__similar(location, place['full_name'])
+                if similarity > greatestSimilarity:
+                    greatestSimilarity = similarity
+                    mostSimilarLocation = place
+            return mostSimilarLocation["geometry"]["coordinates"]
+        else:
+            return False
+
+    def __similar(self, a, b):
+        return SequenceMatcher(None, a, b).ratio()
 
 
     #stems the word and lowercases it

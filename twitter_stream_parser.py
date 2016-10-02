@@ -5,10 +5,10 @@ import pprint
 class TwitterStreamParser(TwitterParser):
     def __init__(self, auth):
         super(TwitterStreamParser, self).__init__(auth)
-        self.api = TwitterStream(auth=auth)
+        self.stream_api = TwitterStream(auth=auth)
 
     def search(self, query, place=None):
-        tweets = self.api.statuses.filter(track=query, place=place)
+        tweets = self.stream_api.statuses.filter(track=query, place=place)
         return FormattedTweetIterator(tweets, self.parse, query)
 
 class FormattedTweetIterator:
