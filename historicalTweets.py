@@ -4,7 +4,6 @@ from featureFunctions import *
 from nltk.sentiment import SentimentAnalyzer
 from nltk.sentiment.util import *
 from trainClassifier import trainClassifier
-from twitterSearch import twitterSearch
 
 CONSUMER_KEY= "eJxO5gRMjIDyUOFIDTHobsoTd"
 CONSUMER_SECRET= "w6ew70tpmuPwbqBwdxvRpE35Zg7bniHfk2EkhMe5c35BQwoWNL"
@@ -13,9 +12,6 @@ OAUTH_TOKEN_SECRET= "qWYkEfk9bL26TnMALPl5vuIRFTrHVMgJXsI84XjxciZ54"
 
 auth=twitter.oauth.OAuth(OAUTH_TOKEN,OAUTH_TOKEN_SECRET,CONSUMER_KEY,CONSUMER_SECRET)
 twitter_api = twitter.Twitter(auth=auth)
-
-if __name__ == "__main__":
-    print getHistoricalTweets()
 
 def getHistoricalTweets():
     classifier = trainClassifier()
@@ -60,3 +56,7 @@ def twitterSearch(query, locationID, classifier, twitter_api):
         tweet = {'text': text, 'subject': query, 'sentiment': polarity, 'place': place, 'user': person, 'geocode': geocode, 'time': time, 'retweets': numRetweets}
 
     return (listOfTweets, numPos/(numPos+numNeg))
+
+
+if __name__ == "__main__":
+    print getHistoricalTweets()
