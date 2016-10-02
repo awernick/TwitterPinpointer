@@ -25,7 +25,7 @@ class TwitterParser(object):
         tweets = self.api.search.tweets(q = query,
                                         place = place,
                                         lang = "en",
-                                        count = 5)["statuses"]
+                                        count = 20)["statuses"]
 
         numPos=0.0
         numNeg=0.0
@@ -133,7 +133,6 @@ class TwitterParser(object):
         posfeats = self.__feature_tuple("corpora/finalPositiveCorpus.txt", "r", "pos")
         negfeats = self.__feature_tuple("corpora/finalNegativeCorpus.txt", "r", "neg")
 
-}
         #a list of (dict, label) tuples, one for each label
         trainfeats=[posfeats,negfeats]
 
