@@ -1,3 +1,5 @@
+import geocoder
+
 from twitter import *
 from unicode_funcs import *
 from difflib import SequenceMatcher
@@ -44,7 +46,7 @@ class TwitterParser(object):
             coordinates = tweet["coordinates"]
         elif tweet["user"]["location"]:
             location = tweet["user"]["location"]
-            coordinates = False #self.geocode(location)
+            coordinates = self.geocode(location)
             if coordinates == False:
                 lat = ""
                 lng = ""
@@ -79,16 +81,11 @@ class TwitterParser(object):
 
 
     def geocode(self, location):
-        listOfPlaces = self.api.geo.search(query = location)['result']['places']
-        if len(listOfPlaces) > 0:
-            mostSimilarLocation = listOfPlaces[0]
-            greatestSimilarity = 0
-            for place in listOfPlaces:
-                similarity = self.__similar(location, place['full_name'])
-                if similarity > greatestSimilarity:
-                    greatestSimilarity = similarity
-                    mostSimilarLocation = place
-            return mostSimilarLocation["centroid"]
+        if location:
+            g = geocoder.google(location)
+            if(len(g.latlng) != 2):
+                return False
+            return g.latlng
         else:
             return False
 
