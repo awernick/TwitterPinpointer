@@ -51,23 +51,21 @@ def process_stream(event, query, place=None):
 # RESTful
 @app.route('/tweets', methods=['GET'])
 def get_tweets():
-    try:
-        if 'lat' in request.args \
-            and 'lng' in request.args and 'radius' in request.args:
-            lat    = request.args['lat']
-            lng    = request.args['lng']
-            radius = request.args['radius']
+    if 'lat' in request.args \
+        and 'lng' in request.args and 'radius' in request.args:
+        lat    = request.args['lat']
+        lng    = request.args['lng']
+        radius = request.args['radius']
 
-            placeID = getLocation(lat, lng, radius)
-        else:
-            placeID = None
+        placeID = getLocation(lat, lng, radius)
+    else:
+        placeID = None
 
-        hillary_tweets = twitter.search(query='Hillary Clinton', place=placeID)[0]
-        trump_tweets = twitter.search(query='Donald Trump', place=placeID)[0]
-        tweets = hillary_tweets + trump_tweets
-        return jsonify(tweets)
-    except TwitterHTTPError:
-        abort(429)
+    hillary_tweets = twitter.search(query='Hillary Clinton', place=placeID)[0]
+    trump_tweets = twitter.search(query='Donald Trump', place=placeID)[0]
+    tweets = hillary_tweets + trump_tweets
+    print(json.dumps(tweets))
+    return jsonify(tweets)
 
 
 

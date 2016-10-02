@@ -25,7 +25,7 @@ class TwitterParser(object):
         tweets = self.api.search.tweets(q = query,
                                         place = place,
                                         lang = "en",
-                                        count = 100)["statuses"]
+                                        count = 5)["statuses"]
 
         numPos=0.0
         numNeg=0.0
@@ -102,6 +102,7 @@ class TwitterParser(object):
     def __feature_tuple(self, fileName, mode, label):
         features = self.__word_features(fileName, mode)
         return (features, label)
+
 
     #add each word from the corpus into our dictionary
     #if it's not a stopword
