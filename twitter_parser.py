@@ -5,7 +5,7 @@ from nltk.corpus import stopwords
 from nltk.stem.porter import PorterStemmer
 from nltk.classify import NaiveBayesClassifier
 
-class TwitterParser:
+class TwitterParser(object):
     stopWords = dict([(word, True) for word in stopwords.words('english')]) #nltk's stopwords
     stopWords2 = [".","!","?","rt","@","=","+","-","&amp;","follow","i'm","i'll"]
     stopWords2 = dict([(to_unicode(word), True) for word in stopWords2]) #my own set of stopwords
