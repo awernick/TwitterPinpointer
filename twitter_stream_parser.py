@@ -22,7 +22,6 @@ class FormattedTweetIterator:
 
     def next(self):
         tweet = self.stream.next()
-        pprint.pprint(tweet)
         return self.func(tweet, self.query)
 
 
