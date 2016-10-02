@@ -26,7 +26,7 @@ class TwitterParser(object):
         tweets = self.api.search.tweets(q = query,
                                         place = place,
                                         lang = "en",
-                                        count = 20)["statuses"]
+                                        count = 30)["statuses"]
 
         numPos=0.0
         numNeg=0.0
@@ -73,11 +73,11 @@ class TwitterParser(object):
             rand1 = randint(0, 100)
             rand2 = randint(0, 100)
             if polarity == "pos":
-                positivity = rand1 if rand1 > rand2 else rand2
-                negativity = rand1 if rand1 < rand2 else rand2
+                positivity = randint(51, 100)
+                negativity = randint(0, positivity)
             else:
-                positivity = rand1 if rand1 < rand2 else rand2
-                negativity = rand1 if rand1 > rand2 else rand2
+                negativity = randint(51, 100)
+                positivity = randint(0, negativity)
 
 
         return {
