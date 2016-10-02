@@ -60,6 +60,7 @@ class TwitterParser(object):
             lat = None
             lng = None
 
+        id = tweet['id_str']
         person = tweet["user"]["screen_name"]
         numRetweets=tweet["retweet_count"]
         geocode=tweet["geo"]
@@ -80,6 +81,7 @@ class TwitterParser(object):
 
 
         return {
+            'id': id,
             'text': text,
             'subject': query,
             'sentiment': polarity,
