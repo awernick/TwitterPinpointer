@@ -13,7 +13,7 @@ OAUTH_TOKEN_SECRET= "qWYkEfk9bL26TnMALPl5vuIRFTrHVMgJXsI84XjxciZ54"
 auth=twitter.oauth.OAuth(OAUTH_TOKEN,OAUTH_TOKEN_SECRET,CONSUMER_KEY,CONSUMER_SECRET)
 twitter_api = twitter.Twitter(auth=auth)
 
-def getHistoricalTweets():
+def getHistoricalTweets(locationID):
     classifier = trainClassifier()
 
     trumpResults = twitterSearch("Trump", locationID, classifier, twitter_api)
@@ -34,9 +34,10 @@ def twitterSearch(query, locationID, classifier, twitter_api):
     #twitter_api.search.tweets() returns a dictionary
     listOfTweets = twitter_api.search.tweets(q = query, place = locationID, lang = "en", count = 100)["statuses"] 
     
-    numPos=0
-    numNeg=0
+    numPos=0.0
+    numNeg=0.0
 
+    listOfFormattedTweets = list()
     for tweet in listOfTweets:
         place=utf8(tweet["user"]["location"])
         person=utf8(tweet["user"]["screen_name"])
@@ -53,10 +54,20 @@ def twitterSearch(query, locationID, classifier, twitter_api):
             elif polarity == "pos":
                 numPos=numPos+1
         
-        tweet = {'text': text, 'subject': query, 'sentiment': polarity, 'place': place, 'user': person, 'geocode': geocode, 'time': time, 'retweets': numRetweets}
+        formattedTweet = {
+            'text': text,
+             'subject': query,
+             'sentiment': polarity,
+             'place': place,
+             'user': person,
+             'geocode': geocode,
+             'time': time,
+             'retweets': numRetweets
+            }
+        listOfFormattedTweets.append(formattedTweet)
 
-    return (listOfTweets, numPos/(numPos+numNeg))
+    return (listOfFormattedTweets, numPos/(numPos+numNeg))
 
-
+#get from US
 if __name__ == "__main__":
-    print getHistoricalTweets()
+    print getHistoricalTweets(1)

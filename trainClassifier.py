@@ -1,23 +1,27 @@
 from nltk.classify import NaiveBayesClassifier
 from featureFunctions import *
-from nltk.corpus import sentence_polarity
-from nltk.sentiment import SentimentAnalyzer
-from nltk.sentiment.util import *
 
 def trainClassifier():
-	pos_docs = [(sent, 'pos') for sent in subjectivity.sents(categories='pos')]
-	neg_docs = [(sent, 'neg') for sent in subjectivity.sents(categories='neg')]
+	print "Determining polarity of features..."
 
-	sentim_analyzer = SentimentAnalyzer()
-	all_words_negate = sentim_analyzer.all_words([mark_negation(doc) for doc in training_docs])
+	#NLTK classifiers work on "featstructs", simple dictionaries
+	    #mapping a feature name to a feature value
+	    #We use booleans to indicate that the set (a tweet) does (or doesn't) contain a feature
+	#For more information: http://www.nltk.org/howto/featstruct.html
 
-	unigram_feats = sentim_analyzer.unigram_word_feats(all_words_negate, min_freq=4)
-	sentim_analyzer.add_feat_extractor(extract_unigram_feats, unigrams=unigram_feats)
-	training_set = sentim_analyzer.apply_features(training_docs)
-	trainer = NaiveBayesClassifier.train
-	classifier = sentim_analyzer.train(trainer, training_set)
+	#pos/negfeats are tuples (dict, label)
+	    #Where dict is a dictionary of (word, boolean) key-val pairs
+	    #label indicates positive or negative
+	posfeats = feature_tuple("corpora/finalPositiveCorpus.txt", "r", "pos")
+	negfeats = feature_tuple("corpora/finalNegativeCorpus.txt", "r", "neg")
 
-	for key,value in sorted(sentim_analyzer.evaluate(test_set).items()):
-		print('{0}: {1}'.format(key, value))
+	#a list of (dict, label) tuples, one for each label
+	trainfeats=[posfeats,negfeats]
+
+	print "Training the classifier..."
+
+	#input: list of (dict, label) tuples, one for each label (pos, neg)
+	#output: trained classifier that can identify each label
+	classifier = NaiveBayesClassifier.train(trainfeats)
 
 	return classifier
