@@ -9,6 +9,7 @@ from twitter        import *
 from flask          import Flask, abort, request, jsonify, \
                            copy_current_request_context
 from flask_socketio import SocketIO
+from twitter_parser import TwitterParser
 
 
 app = Flask(__name__)
@@ -25,7 +26,8 @@ auth_token      = environ['TWITTER_AUTH_KEY']
 auth_secret     = environ['TWITTER_AUTH_SECRET']
 
 auth           = OAuth(auth_token, auth_secret, consumer_key, consumer_secret)
-twitter        = Twitter(auth=auth)
+twitter        = TwitterParser(auth=auth)
+twitter_api    = Twitter(auth=auth)
 twitter_stream = TwitterStream(auth=auth)
 
 # hilary_stream  = twitter_stream.statuses.filter(track='Hilary Clinton')
@@ -54,9 +56,9 @@ def get_tweets():
     else:
         placeID = None
 
-    hillary_tweets = twitter.search.tweets(q='Hilary Clinton', place=placeID)
-    trump_tweets = twitter.search.tweets(q='Donald Trump', place=placeID)
-    tweets = hillary_tweets['statuses'] + trump_tweets['statuses']
+    hillary_tweets = twitter.search(query='Hilary Clinton', place=placeID)[0]
+    trump_tweets = twitter.search(query='Donald Trump', place=placeID)[0]
+    tweets = hillary_tweets + trump_tweets
 
     return jsonify(tweets)
 
@@ -66,7 +68,7 @@ def get_tweet(tweet_id):
     if(len(str(tweet_id)) == 0):
         abort(404)
     try:
-        tweet = twitter.statuses.show(id=tweet_id)
+        tweet = twitter_api.statuses.show(id=tweet_id)
         return jsonify(tweet)
     except TwitterHTTPError as error:
         abort(404)
@@ -77,7 +79,7 @@ def client_connected():
     print "Client connected"
 
 def getLocation(latitude, longitude, radius):
-    geolocations = twitter.geo.search(lat=latitude, long=longitude, accuracy=radius)
+    geolocations = twitter_api.geo.search(lat=latitude, long=longitude, accuracy=radius)
 
     listOfPlaces = geolocations['result']['places']
 
@@ -105,6 +107,7 @@ def getApproximateRadius(place):
 
 def distance(x, y):
     return ((x[0]-y[0]) + (x[1]-y[1])) ** 2
+
 
 if __name__ == '__main__':
     socketio.run(app, debug=True)

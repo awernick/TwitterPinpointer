@@ -4,7 +4,7 @@
 import sys
 
 #used to convert byte strings to unicode (used for inner workings)
-def toUnicode(txt):
+def to_unicode(txt):
     return txt.decode("utf-8", errors='ignore')
 def utf8(txt):
     return txt.encode(sys.stdout.encoding, errors='ignore')
