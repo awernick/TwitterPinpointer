@@ -21,9 +21,6 @@ def feature_tuple(fileName, mode, label):
 
 #add each word from the corpus into our dictionary
     #if it's not a stopword
-#Note that normalization (word.lower()) is not needed 
-    #because the Stanford corpus is already lowercase
-#Other corpora might need to be normalized, however
 def word_features(fileName, mode):
     corpus = open(fileName, mode)
     features = dict()
@@ -36,6 +33,9 @@ def word_features(fileName, mode):
     return features
 
 #iterate through every word in text, normalize it, and remove stopwords
+#Note that normalization (word.lower()) is not needed 
+    #because the Stanford corpus is already lowercase
+#Other corpora might need to be normalized, however
 def extractFeaturesFrom(text):
     if text is not None:
         return dict([(normalize(word), True) for word in text.split() 

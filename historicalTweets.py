@@ -6,10 +6,10 @@ from nltk.sentiment.util import *
 from trainClassifier import trainClassifier
 from twitterSearch import twitterSearch
 
-# CONSUMER_KEY= 
-# CONSUMER_SECRET= 
-# OAUTH_TOKEN= 
-# OAUTH_TOKEN_SECRET= 
+CONSUMER_KEY= "eJxO5gRMjIDyUOFIDTHobsoTd"
+CONSUMER_SECRET= "w6ew70tpmuPwbqBwdxvRpE35Zg7bniHfk2EkhMe5c35BQwoWNL"
+OAUTH_TOKEN= "740720624880881666-OCWQWAN52rD66EHjGrwqti58qta1Dqd"
+OAUTH_TOKEN_SECRET= "qWYkEfk9bL26TnMALPl5vuIRFTrHVMgJXsI84XjxciZ54"
 
 auth=twitter.oauth.OAuth(OAUTH_TOKEN,OAUTH_TOKEN_SECRET,CONSUMER_KEY,CONSUMER_SECRET)
 twitter_api = twitter.Twitter(auth=auth)
