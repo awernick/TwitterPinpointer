@@ -39,7 +39,7 @@ class TwitterParser(object):
         return (formatted_tweets, numPos/(numPos+numNeg))
 
     def parse(self, tweet, query):
-        if tweet['user']['location']:
+        if tweet['user']['location'] is not None:
             place = tweet['user']['location']
         else:
             place = ''
